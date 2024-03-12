@@ -8,7 +8,7 @@ on:  # Indent by two spaces
 jobs:
   deploy:
     - name: Deploy on EC2 from main branch
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-latest  # Indent by two spaces
 
     - name: Checkout files
       uses: actions/checkout@v2
