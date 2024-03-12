@@ -1,0 +1,33 @@
+name: Resume-Hosting-using-Github-Actions
+
+on:
+  push:
+    branch:
+      - main
+
+jobs:
+  deploy:
+    - name: Deploy on EC2 from main branch
+      runs-on: ubuntu-latest
+
+    - name: Checkout files
+      uses: actions/checkout@v2
+
+    - name: Deploy to server
+      users: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+        REMOTE_HOST: ${{ secrets.HOST_DNS }}
+        REMOTE_USER: ${{ secrets.USERNAME }}
+        TARGET: ${{ secrets.TARGET_DIR }}
+
+    - name: Executing SSH commands
+      uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_DNS }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo systemctl restart apache2
+            cd home
+            sudo mv * /var/www/html
